@@ -2,7 +2,6 @@ import os
 import tempfile
 from typing import Tuple
 
-import pytest
 from pyspark.sql import SparkSession
 from pyspark.sql.types import DoubleType, StructField
 
@@ -91,14 +90,13 @@ def test_should_maintain_all_data_it_reads(spark_session: SparkSession) -> None:
     actual_dataframe = spark_session.read.parquet(given_transform_folder)
     actual_columns = set(actual_dataframe.columns)
     actual_schema = set(actual_dataframe.schema)
-    expected_columns = set(given_dataframe.columns)
+    expected_columns = {*given_dataframe.columns, "distance"}
     expected_schema = set(given_dataframe.schema)
 
     assert expected_columns == actual_columns
     assert expected_schema.issubset(actual_schema)
 
 
-@pytest.mark.skip
 def test_should_add_distance_column_with_calculated_distance(
     spark_session: SparkSession,
 ) -> None:
